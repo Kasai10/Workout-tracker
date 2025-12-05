@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  workout-tracker:
+    build: .
+    container_name: workout-tracker
+    ports:
+      - "8050:8050"
+    volumes:
+      - ./workout.db:/app/workout.db  # persist database
+    restart: unless-stopped

@@ -1,0 +1,304 @@
+from dash import Dash, html, dcc, Input, Output, State, dash_table
+import dash_bootstrap_components as dbc
+import pandas as pd
+import sqlite3
+from db import insert_set, DB_PATH
+
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+def load_data(person=None):
+    conn = sqlite3.connect(DB_PATH)
+    if person:
+        query = f"SELECT * FROM workout_sets WHERE person = ? ORDER BY timestamp DESC"
+        df = pd.read_sql_query(query, conn, params=[person])
+    else:
+        df = pd.read_sql_query("SELECT * FROM workout_sets ORDER BY timestamp DESC", conn)
+    conn.close()
+    return df
+
+# -------------------------------------------------------------
+# LAYOUT
+# -------------------------------------------------------------
+app.layout = dbc.Container([
+
+    html.H2("Workout Tracker", className="mt-3 mb-4 text-center"),
+
+    # INPUT AREA
+    dbc.Card(
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Person"),
+                    dcc.Dropdown(
+                        id="person",
+                        options=[
+                            {"label": "Julia", "value": "Julia"},
+                            {"label": "Simo", "value": "Simo"},
+                            {"label": "Leon", "value": "Leon"},
+                        ],
+                        value="Julia",
+                        className="mt-1"
+                    )
+                ], xs=12, md=4),
+
+                dbc.Col([
+                    html.Label("Übung"),
+                    dcc.Input(
+                        id="exercise",
+                        type="text",
+                        placeholder="Kniebeugen",
+                        className="form-control mt-1"
+                    )
+                ], xs=12, md=4),
+
+                dbc.Col([
+                    html.Label("Wiederholungen"),
+                    dcc.Input(
+                        id="reps",
+                        type="number",
+                        placeholder="12",
+                        className="form-control mt-1"
+                    )
+                ], xs=12, md=4),
+            ]),
+
+            dbc.Button("Eintrag hinzufügen", id="add-btn", color="primary", className="mt-3 w-100"),
+
+            html.Div(id="output", className="mt-3 text-success"),
+        ]),
+        className="mb-4 shadow-sm rounded-4"
+    ),
+
+    # SECTIONS FOR EACH PERSON
+    html.H3("Einträge pro Person", className="mt-4 text-center"),
+
+    # Julia
+    html.H4("Julia", className="mt-3"),
+    dash_table.DataTable(
+        id="table-julia",
+        columns=[
+            {"name": "Übung", "id": "exercise"},
+            {"name": "Reps", "id": "repetitions"},
+            {"name": "Zeit", "id": "timestamp"},
+        ],
+        style_cell={"textAlign": "center", "padding": "6px"},
+        style_table={"overflowX": "auto"},
+        page_size=5
+    ),
+
+    # Simo
+    html.H4("Simo", className="mt-4"),
+    dash_table.DataTable(
+        id="table-simo",
+        columns=[
+            {"name": "Übung", "id": "exercise"},
+            {"name": "Reps", "id": "repetitions"},
+            {"name": "Zeit", "id": "timestamp"},
+        ],
+        style_cell={"textAlign": "center", "padding": "6px"},
+        style_table={"overflowX": "auto"},
+        page_size=5
+    ),
+
+    # Leon
+    html.H4("Leon", className="mt-4"),
+    dash_table.DataTable(
+        id="table-leon",
+        columns=[
+            {"name": "Übung", "id": "exercise"},
+            {"name": "Reps", "id": "repetitions"},
+            {"name": "Zeit", "id": "timestamp"},
+        ],
+        style_cell={"textAlign": "center", "padding": "6px"},
+        style_table={"overflowX": "auto"},
+        page_size=5
+    ),
+
+    dcc.Interval(id="interval", interval=2000, n_intervals=0)
+
+], fluid=True)
+
+
+# -------------------------------------------------------------
+# CALLBACKS
+# -------------------------------------------------------------
+@app.callback(
+    Output("output", "children"),
+    Input("add-btn", "n_clicks"),
+    State("person", "value"),
+    State("exercise", "value"),
+    State("reps", "value")
+)
+def add_set(n, person, exercise, reps):
+    if not n:
+        return ""
+    insert_set(person, exercise, reps)
+    return f"Gespeichert: {person} – {exercise} – {reps} Wiederholungen"
+
+@app.callback(
+    Output("table-julia", "data"),
+    Output("table-simo", "data"),
+    Output("table-leon", "data"),
+    Input("interval", "n_intervals")
+)
+def update_tables(_):
+    julia = load_data("Julia").to_dict("records")
+    simo = load_data("Simo").to_dict("records")
+    leon = load_data("Leon").to_dict("records")
+    return julia, simo, leon
+
+
+if __name__ == "__main__":from dash import Dash, html, dcc, Input, Output, State, dash_table
+import dash_bootstrap_components as dbc
+import pandas as pd
+import sqlite3
+from db import insert_set, DB_PATH
+
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+def load_data(person=None):
+    conn = sqlite3.connect(DB_PATH)
+    if person:
+        query = f"SELECT * FROM workout_sets WHERE person = ? ORDER BY timestamp DESC"
+        df = pd.read_sql_query(query, conn, params=[person])
+    else:
+        df = pd.read_sql_query("SELECT * FROM workout_sets ORDER BY timestamp DESC", conn)
+    conn.close()
+    return df
+
+# -------------------------------------------------------------
+# LAYOUT
+# -------------------------------------------------------------
+app.layout = dbc.Container([
+
+    html.H2("Workout Tracker", className="mt-3 mb-4 text-center"),
+
+    # INPUT AREA
+    dbc.Card(
+        dbc.CardBody([
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Person"),
+                    dcc.Dropdown(
+                        id="person",
+                        options=[
+                            {"label": "Julia", "value": "Julia"},
+                            {"label": "Simo", "value": "Simo"},
+                            {"label": "Leon", "value": "Leon"},
+                        ],
+                        value="Julia",
+                        className="mt-1"
+                    )
+                ], xs=12, md=4),
+
+                dbc.Col([
+                    html.Label("Übung"),
+                    dcc.Input(
+                        id="exercise",
+                        type="text",
+                        placeholder="Kniebeugen",
+                        className="form-control mt-1"
+                    )
+                ], xs=12, md=4),
+
+                dbc.Col([
+                    html.Label("Wiederholungen"),
+                    dcc.Input(
+                        id="reps",
+                        type="number",
+                        placeholder="12",
+                        className="form-control mt-1"
+                    )
+                ], xs=12, md=4),
+            ]),
+
+            dbc.Button("Eintrag hinzufügen", id="add-btn", color="primary", className="mt-3 w-100"),
+
+            html.Div(id="output", className="mt-3 text-success"),
+        ]),
+        className="mb-4 shadow-sm rounded-4"
+    ),
+
+    # SECTIONS FOR EACH PERSON
+    html.H3("Einträge pro Person", className="mt-4 text-center"),
+
+    # Julia
+    html.H4("Julia", className="mt-3"),
+    dash_table.DataTable(
+        id="table-julia",
+        columns=[
+            {"name": "Übung", "id": "exercise"},
+            {"name": "Reps", "id": "repetitions"},
+            {"name": "Zeit", "id": "timestamp"},
+        ],
+        style_cell={"textAlign": "center", "padding": "6px"},
+        style_table={"overflowX": "auto"},
+        page_size=5
+    ),
+
+    # Simo
+    html.H4("Simo", className="mt-4"),
+    dash_table.DataTable(
+        id="table-simo",
+        columns=[
+            {"name": "Übung", "id": "exercise"},
+            {"name": "Reps", "id": "repetitions"},
+            {"name": "Zeit", "id": "timestamp"},
+        ],
+        style_cell={"textAlign": "center", "padding": "6px"},
+        style_table={"overflowX": "auto"},
+        page_size=5
+    ),
+
+    # Leon
+    html.H4("Leon", className="mt-4"),
+    dash_table.DataTable(
+        id="table-leon",
+        columns=[
+            {"name": "Übung", "id": "exercise"},
+            {"name": "Reps", "id": "repetitions"},
+            {"name": "Zeit", "id": "timestamp"},
+        ],
+        style_cell={"textAlign": "center", "padding": "6px"},
+        style_table={"overflowX": "auto"},
+        page_size=5
+    ),
+
+    dcc.Interval(id="interval", interval=2000, n_intervals=0)
+
+], fluid=True)
+
+
+# -------------------------------------------------------------
+# CALLBACKS
+# -------------------------------------------------------------
+@app.callback(
+    Output("output", "children"),
+    Input("add-btn", "n_clicks"),
+    State("person", "value"),
+    State("exercise", "value"),
+    State("reps", "value")
+)
+def add_set(n, person, exercise, reps):
+    if not n:
+        return ""
+    insert_set(person, exercise, reps)
+    return f"Gespeichert: {person} – {exercise} – {reps} Wiederholungen"
+
+@app.callback(
+    Output("table-julia", "data"),
+    Output("table-simo", "data"),
+    Output("table-leon", "data"),
+    Input("interval", "n_intervals")
+)
+def update_tables(_):
+    julia = load_data("Julia").to_dict("records")
+    simo = load_data("Simo").to_dict("records")
+    leon = load_data("Leon").to_dict("records")
+    return julia, simo, leon
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+    app.run(debug=True)
