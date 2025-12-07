@@ -211,7 +211,9 @@ workout_tab = html.Div([
                         id="person",
                         options=[],
                         placeholder="Person wählen",
-                        className="mt-1"
+                        className="mt-1",
+                        style={"color": "white"},
+                        optionHeight=40
                     )
                 ], xs=12, md=4),
 
@@ -224,7 +226,8 @@ workout_tab = html.Div([
                         searchable=True,
                         clearable=True,
                         className="mt-1",
-                        style={"width": "100%"}
+                        style={"width": "100%", "color": "white"},
+                        optionHeight=40
                     )
                 ], xs=12, md=4),
 
@@ -234,7 +237,8 @@ workout_tab = html.Div([
                         id="reps",
                         type="number",
                         placeholder="12",
-                        className="form-control mt-1"
+                        className="form-control mt-1",
+                        style={"backgroundColor": "#2b3035", "color": "white", "border": "1px solid #444"}
                     )
                 ], xs=12, md=4),
             ]),
@@ -242,23 +246,24 @@ workout_tab = html.Div([
             dbc.Row([
                 dbc.Col([
                     html.Label("📅 Datum", style={"fontWeight": "bold"}),
-                    dcc.DatePickerSingle(
-                        id="date-picker",
-                        date=None,
-                        placeholder="Datum wählen",
-                        display_format="DD.MM.YYYY",
-                        className="mt-1",
-                        style={"width": "100%"}
-                    )
+                    html.Div([
+                        dcc.DatePickerSingle(
+                            id="date-picker",
+                            date=datetime.now().strftime('%Y-%m-%d'),
+                            display_format="DD.MM.YYYY",
+                            className="mt-1",
+                            initial_visible_month=datetime.now().date()
+                        )
+                    ], style={"width": "100%"})
                 ], xs=12, md=4),
-            ], className="mt-3"),
+            ], className="mt-3", style={"color": "white"}),
 
             dbc.Button("✅ Eintrag hinzufügen", id="add-btn", color="info", size="lg", className="mt-3 w-100", 
                       style={"fontWeight": "bold"}),
 
             html.Div(id="output", className="mt-3 text-success", style={"fontSize": "1.1rem", "fontWeight": "bold"}),
         ], style={"backgroundColor": "#2b3035"})
-    ], className="mb-5 shadow-lg", style={"border": "2px solid #343a40", "borderRadius": "15px", "overflow": "hidden"}),
+    ], className="mb-5 shadow-lg", style={"border": "2px solid #343a40", "borderRadius": "15px", "overflow": "visible"}),
 
     # SECTIONS FOR EACH PERSON
     html.Div([
@@ -282,7 +287,8 @@ targets_tab = html.Div([
                         id="new-person-name",
                         type="text",
                         placeholder="Name eingeben",
-                        className="form-control mt-1"
+                        className="form-control mt-1",
+                        style={"backgroundColor": "#2b3035", "color": "white", "border": "1px solid #444"}
                     )
                 ], xs=12, md=8),
                 dbc.Col([
@@ -307,7 +313,8 @@ targets_tab = html.Div([
                         id="new-exercise-name",
                         type="text",
                         placeholder="Übungsname eingeben",
-                        className="form-control mt-1"
+                        className="form-control mt-1",
+                        style={"backgroundColor": "#2b3035", "color": "white", "border": "1px solid #444"}
                     )
                 ], xs=12, md=8),
                 dbc.Col([
@@ -331,7 +338,9 @@ targets_tab = html.Div([
                         id="target-person",
                         options=[],
                         placeholder="Person wählen",
-                        className="mt-1"
+                        className="mt-1",
+                        style={"color": "white"},
+                        optionHeight=40
                     )
                 ], xs=12, md=4),
 
@@ -343,7 +352,9 @@ targets_tab = html.Div([
                         placeholder="Übung wählen",
                         searchable=True,
                         clearable=True,
-                        className="mt-1"
+                        className="mt-1",
+                        style={"color": "white"},
+                        optionHeight=40
                     )
                 ], xs=12, md=4),
 
@@ -353,7 +364,8 @@ targets_tab = html.Div([
                         id="target-reps",
                         type="number",
                         placeholder="z.B. 50",
-                        className="form-control mt-1"
+                        className="form-control mt-1",
+                        style={"backgroundColor": "#2b3035", "color": "white", "border": "1px solid #444"}
                     )
                 ], xs=12, md=4),
             ]),
@@ -689,4 +701,4 @@ def delete_target_row(previous, current):
 
 
 if __name__ == "__main__":
-    app.run(debug=False,  host="0.0.0.0", port=8050)
+    app.run(debug=True,  host="0.0.0.0", port=8050)

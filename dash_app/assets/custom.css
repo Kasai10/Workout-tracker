@@ -1,0 +1,75 @@
+/* Dark mode styling for dropdown menus */
+.Select-menu-outer {
+    background-color: #2b3035 !important;
+    border: 1px solid #444 !important;
+}
+
+.Select-option {
+    background-color: #2b3035 !important;
+    color: white !important;
+}
+
+.Select-option:hover {
+    background-color: #B794F6 !important;
+    color: white !important;
+}
+
+.Select-option.is-focused {
+    background-color: #B794F6 !important;
+    color: white !important;
+}
+
+.Select-option.is-selected {
+    background-color: #E879F9 !important;
+    color: white !important;
+}
+
+.Select-control {
+    background-color: #2b3035 !important;
+    border: 1px solid #444 !important;
+    color: white !important;
+}
+
+.Select-value-label,
+.Select-placeholder,
+.Select--single > .Select-control .Select-value {
+    color: white !important;
+}
+
+.Select-input > input {
+    color: white !important;
+}
+
+/* For the new react-select (used in newer Dash versions) */
+.css-1dimb5e-singleValue,
+.css-qc6sy-singleValue {
+    color: white !important;
+}
+
+.css-26l3qy-menu,
+.css-1n7v3ny-option {
+    background-color: #2b3035 !important;
+    color: white !important;
+}
+
+.css-1n7v3ny-option:hover,
+.css-1n7v3ny-option:focus {
+    background-color: #B794F6 !important;
+}
+
+.css-yt9ioa-option {
+    background-color: #E879F9 !important;
+    color: white !important;
+}
+
+div[class*="-menu"] {
+    background-color: #2b3035 !important;
+}
+
+div[class*="-option"] {
+    color: white !important;
+}
+
+div[class*="-option"]:hover {
+    background-color: #B794F6 !important;
+}
